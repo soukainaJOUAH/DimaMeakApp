@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cahier des Charges - DIMA M3AK</title>
+    <style>
+        /* Variables et Reset */
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #4a148c;
+            --accent-color: #00bcd4;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+            --medium-text: #6c757d;
+            --border-color: #dee2e6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--dark-text);
+            line-height: 1.6;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        /* Conteneur principal */
+        .container {
+            max-width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+            border-radius: 16px;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Filigrane */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 140px;
+            font-weight: 900;
+            color: rgba(26, 35, 126, 0.03);
+            white-space: nowrap;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* En-tête avec numérotation */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 5px solid var(--primary-color);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .document-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 10px;
+        }
+        
+        .doc-id {
+            font-size: 14px;
+            color: var(--medium-text);
+        }
+        
+        .version {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .main-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            font-size: 56px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .arabic-logo {
+            font-size: 42px;
+            color: var(--secondary-color);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .title {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .subtitle {
+            font-size: 20px;
+            color: var(--medium-text);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Sections avec numérotation automatique */
+        .section-container {
+            counter-reset: section;
+        }
+        
+        .section {
+            margin-bottom: 45px;
+            page-break-inside: avoid;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title {
+            font-size: 26px;
+            color: var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            border-bottom: 3px solid var(--light-bg);
+            display: flex;
+            align-items: center;
+            counter-increment: section;
+        }
+        
+        .section-title:before {
+            content: counter(section) ". ";
+            font-weight: bold;
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .subsection {
+            margin-bottom: 30px;
+            background: var(--light-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 6px solid var(--primary-color);
+        }
+        
+        .subsection-title {
+            font-size: 22px;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .subsection-title:before {
+            content: "▸";
+            color: var(--accent-color);
+            font-size: 24px;
+        }
+        
+        /* Typographie et contenu */
+        .content {
+            color: var(--dark-text);
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(to right, #e3f2fd, #f3e5f5);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border-left: 6px solid var(--accent-color);
+        }
+        
+        .highlight-title {
+            font-size: 20px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Listes stylisées */
+        .styled-list {
+            list-style: none;
+            margin-left: 20px;
+        }
+        
+        .styled-list li {
+            margin-bottom: 12px;
+            padding-left: 35px;
+            position: relative;
+            font-size: 16px;
+        }
+        
+        .styled-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            background: var(--success-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .excluded-list li:before {
+            content: "✗";
+            background: var(--danger-color);
+        }
+        
+        /* Tableaux améliorés */
+        .spec-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 25px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .spec-table th {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 18px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .spec-table td {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+        
+        .spec-table tr:nth-child(even) {
+            background: var(--light-bg);
+        }
+        
+        .spec-table tr:hover {
+            background: #e3f2fd;
+        }
+        
+        /* Badges colorés */
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 2px;
+        }
+        
+        .badge-primary {
+            background: #e8eaf6;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .badge-success {
+            background: #e8f5e9;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+        
+        .badge-warning {
+            background: #fff3e0;
+            color: var(--warning-color);
+            border: 1px solid var(--warning-color);
+        }
+        
+        .badge-danger {
+            background: #ffebee;
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+        
+        .badge-info {
+            background: #e1f5fe;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+        
+        /* Grilles */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin: 25px 0;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 25px 0;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin: 25px 0;
+        }
+        
+        .card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-bg);
+        }
+        
+        /* Planning Gantt stylisé */
+        .gantt-container {
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+        
+        .gantt-chart {
+            min-width: 800px;
+        }
+        
+        .gantt-phase {
+            margin-bottom: 15px;
+        }
+        
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .phase-title {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .phase-timeline {
+            height: 40px;
+            background: var(--light-bg);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .phase-duration {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), #4fc3f7);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        /* Tests et validation */
+        .test-criteria {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .test-item {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .test-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        /* Bouton téléchargement - CORRIGÉ */
+        .download-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 18px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 10px 30px rgba(26, 35, 126, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(26, 35, 126, 0.6);
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        }
+        
+        .download-btn:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 3px solid var(--primary-color);
+            text-align: center;
+            color: var(--medium-text);
+            font-size: 14px;
+        }
+        
+        .confidential {
+            background: var(--light-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        /* Responsive et impression */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                max-width: 100%;
+                min-height: auto;
+                padding: 20px;
+            }
+            
+            .download-btn {
+                display: none;
+            }
+        }
+        
+        @media screen and (max-width: 1200px) {
+            .grid-3, .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+            
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .download-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                font-size: 14px;
+            }
+        }
+        
+        /* Animations subtiles */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="pdf-content">
+        <div class="watermark">DIMA M3AK</div>
+        
+        <!-- En-tête avec informations document -->
+        <div class="document-info">
+            <div class="doc-id">DOC-CC-DIMA-M3AK-2024-001</div>
+            <div class="version">VERSION 3.0</div>
+        </div>
+        
+        <div class="header">
+            <div class="main-title">
+                <div class="logo">DIMA M3AK</div>
+                <div class="arabic-logo">ديما معاك</div>
+                <h1 class="title">CAHIER DES CHARGES TECHNIQUE</h1>
+                <div class="subtitle">Application Mobile Inclusive pour Personnes en Situation de Handicap au Maroc</div>
+            </div>
+        </div>
+        
+        <div class="section-container">
+            <!-- 1. Introduction / Contexte -->
+            <div class="section">
+                <h2 class="section-title">Introduction / Contexte</h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Contexte du Projet</h3>
+                    <div class="content">
+                        <p>Le Maroc compte plus de <strong>2.3 millions de personnes en situation de handicap</strong> selon le Haut-Commissariat au Plan (HCP). Ces personnes rencontrent des difficultés majeures dans leur vie quotidienne, notamment pour :</p>
+                        
+                        <div class="grid-2">
+                            <div class="card">
+                                <div class="card-title">🚗 Mobilité</div>
+                                <p>Accès limité aux transports adaptés, infrastructure urbaine peu accessible</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">🏥 Services de santé</div>
+                                <p>Difficultés à trouver des accompagnateurs qualifiés pour rendez-vous médicaux</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">🛒 Vie quotidienne</div>
+                                <p>Besoin d'assistance pour courses, démarches administratives, etc.</p>
+                            </div>
+                            <div class="card">
+                                <div class="card-title">💼 Emploi & Éducation</div>
+                                <p>Accès limité aux opportunités professionnelles et éducatives adaptées</p>
+                            </div>
+                        </div>
+                        
+                        <p><strong>DIMA M3AK</strong> ("Toujours avec toi" en arabe marocain) naît de ce constat pour offrir une solution numérique inclusive, connectant les personnes en situation de handicap avec des services adaptés et vérifiés.</p>
+                    </div>
+                </div>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Cible Publique</h3>
+                    <div class="grid-3">
+                        <div class="card">
+                            <div class="card-title">👥 Personnes Handicapées</div>
+                            <p><strong>2.3M+ personnes</strong> au Maroc avec divers types de handicaps :</p>
+                            <ul class="styled-list">
+                                <li>Moteur (34%)</li>
+                                <li>Visuel (28%)</li>
+                                <li>Auditif (19%)</li>
+                                <li>Mental (12%)</li>
+                                <li>Autres (7%)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-title">🤝 Accompagnateurs</div>
+                            <p>Professionnels et bénévoles offrant des services adaptés :</p>
+                            <ul class="styled-list">
+                                <li>Aides-soignants</li>
+                                <li>Conducteurs spécialisés</li>
+                                <li>Assistants personnels</li>
+                                <li>Interprètes LSF</li>
+                                <li>Étudiants en santé</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-title">🏢 Partenaires Institutionnels</div>
+                            <p>Structures publiques et privées :</p>
+                            <ul class="styled-list">
+                                <li>Associations handicap</li>
+                                <li>Centres de santé</li>
+                                <li>Entreprises sociales</li>
+                                <li>Collectivités locales</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2. Objectifs -->
+            <div class="section">
+                <h2 class="section-title">Objectifs du Projet</h2>
+                
+                <div class="highlight-box">
+                    <div class="highlight-title">🎯 Vision Stratégique</div>
+                    <p><strong>"Devenir la plateforme de référence au Maroc pour l'accès aux services adaptés aux personnes en situation de handicap, en combinant technologie inclusive et impact social mesurable."</strong></p>
+                </div>
+                
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">Objectifs Fonctionnels</div>
+                        <ul class="styled-list">
+                            <li>Interface 100% accessible (WCAG 2.1 AA)</li>
+                            <li>Recherche vocale en Darija fonctionnelle</li>
+                            <li>Système de réservation simple en 3 clics</li>
+                            <li>Évaluation automatique de l'adaptation</li>
+                            <li>Gestion des profils et préférences</li>
+                            <li>Notifications en temps réel</li>
+                            <li>Signalement des services non adaptés</li>
+                            <li>Historique des interactions</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-title">Objectifs Non Fonctionnels</div>
+                        <ul class="styled-list">
+                            <li>Temps de réponse < 3 secondes</li>
+                            <li>Disponibilité 99.5% (SLA)</li>
+                            <li>Compatibilité iOS 13+ / Android 8+</li>
+                            <li>Chiffrement des données sensibles</li>
+                            <li>RGPD compliant</li>
+                            <li>Support Darija/Français/Arabe</li>
+                            <li>Performance sur réseaux 3G</li>
+                            <li>Batterie optimisée</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Indicateurs de Succès (KPI)</h3>
+                    <div class="grid-4">
+                        <div class="test-item">
+                            <div class="test-value">1,000+</div>
+                            <p>Utilisateurs actifs mensuels</p>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-value">85%+</div>
+                            <p>Satisfaction adaptation</p>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-value">500+</div>
+                            <p>Services vérifiés</p>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-value"><3s</div>
+                            <p>Temps réponse recherche</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 3. Périmètre -->
+            <div class="section">
+                <h2 class="section-title">Périmètre du Projet</h2>
+                
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">✅ INCLUS dans le MVP</div>
+                        <ul class="styled-list">
+                            <li>Application mobile iOS/Android</li>
+                            <li>Inscription par téléphone</li>
+                            <li>Double profil (handicapé/accompagnateur)</li>
+                            <li>Recherche vocale/textuelle</li>
+                            <li>Réservation simple sans paiement</li>
+                            <li>Évaluation binaire OUI/NON</li>
+                            <li>Système de signalement</li>
+                            <li>Interface accessible WCAG 2.1</li>
+                            <li>Notifications push</li>
+                            <li>Backend Firebase</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-title">❌ NON INCLUS dans le MVP</div>
+                        <ul class="styled-list excluded-list">
+                            <li>Paiement en ligne</li>
+                            <li>Chat vidéo intégré</li>
+                            <li>Application web desktop</li>
+                            <li>Système de parrainage complexe</li>
+                            <li>Certifications avancées</li>
+                            <li>API publique pour partenaires</li>
+                            <li>Mode hors ligne complet</li>
+                            <li>Traduction automatique avancée</li>
+                            <li>Analytics avancés</li>
+                            <li>Marketing automation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 4. Spécifications fonctionnelles -->
+            <div class="section">
+                <h2 class="section-title">Spécifications Fonctionnelles</h2>
+                
+                <table class="spec-table">
+                    <thead>
+                        <tr>
+                            <th>Module</th>
+                            <th>Fonctionnalité</th>
+                            <th>Description</th>
+                            <th>Priorité</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>AU01</strong><br>Authentification</td>
+                            <td>Inscription par téléphone</td>
+                            <td>Validation OTP SMS, création profil basique</td>
+                            <td><span class="badge badge-danger">Élevée</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>PF01</strong><br>Profil Utilisateur</td>
+                            <td>Gestion double profil</td>
+                            <td>Choix "Besoin d'aide" / "Propose aide", informations personnelles</td>
+                            <td><span class="badge badge-danger">Élevée</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>PF02</strong><br>Profil Handicap</td>
+                            <td>Sélection type handicap</td>
+                            <td>Options : Mobilité, Vision, Audition, Cognitif, Physique, Communication</td>
+                            <td><span class="badge badge-warning">Moyenne</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>SR01</strong><br>Recherche</td>
+                            <td>Recherche vocale</td>
+                            <td>Bouton microphone, reconnaissance Darija, transformation texte</td>
+                            <td><span class="badge badge-danger">Élevée</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>SR02</strong><br>Recherche</td>
+                            <td>Recherche textuelle</td>
+                            <td>Barre recherche avec autocomplétion, filtres géolocalisation</td>
+                            <td><span class="badge badge-danger">Élevée</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>RS01</strong><br>Réservation</td>
+                            <td>Demande service</td>
+                            <td>"Maintenant" / "Programmer", confirmation instantanée</td>
+                            <td><span class="badge badge-danger">Élevée</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>EV01</strong><br>Évaluation</td>
+                            <td>Feedback adapté</td>
+                            <td>Question unique "Était-ce adapté ?", réponse OUI/NON</td>
+                            <td><span class="badge badge-warning">Moyenne</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>SE01</strong><br>Sécurité</td>
+                            <td>Signalement service</td>
+                            <td>Bouton signalement, catégories prédéfinies, alerte équipe</td>
+                            <td><span class="badge badge-warning">Moyenne</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>NT01</strong><br>Notifications</td>
+                            <td>Notifications push</td>
+                            <td>Nouvelles demandes, confirmations, rappels, évaluations</td>
+                            <td><span class="badge badge-success">Basse</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Workflows Principaux</h3>
+                    <div class="grid-3">
+                        <div class="card">
+                            <div class="card-title">🔄 Inscription</div>
+                            <p>1. Entrer numéro → 2. Recevoir OTP → 3. Choisir profil → 4. Compléter informations → 5. Accéder à l'app</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">🔍 Recherche</div>
+                            <p>1. Appuyer sur microphone → 2. Parler sa demande → 3. Voir résultats → 4. Sélectionner service → 5. Réserver</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">⭐ Évaluation</div>
+                            <p>1. Notification 24h après → 2. Répondre OUI/NON → 3. Option commentaire → 4. Impact note accompagnateur</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 5. Spécifications techniques -->
+            <div class="section">
+                <h2 class="section-title">Spécifications Techniques</h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Architecture Technique</h3>
+                    <div class="grid-3">
+                        <div class="card">
+                            <div class="card-title">📱 Frontend Mobile</div>
+                            <ul class="styled-list">
+                                <li><strong>Framework :</strong> React Native 0.72+</li>
+                                <li><strong>Langage :</strong> TypeScript</li>
+                                <li><strong>Compatibilité :</strong> iOS 13+ / Android 8+</li>
+                                <li><strong>Navigation :</strong> React Navigation 6.x</li>
+                                <li><strong>État global :</strong> Redux Toolkit</li>
+                                <li><strong>UI Components :</strong> React Native Paper</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-title">☁️ Backend & Services</div>
+                            <ul class="styled-list">
+                                <li><strong>Platform :</strong> Google Firebase</li>
+                                <li><strong>Base de données :</strong> Firestore</li>
+                                <li><strong>Authentification :</strong> Firebase Auth</li>
+                                <li><strong>Stockage :</strong> Firebase Storage</li>
+                                <li><strong>Fonctions :</strong> Cloud Functions</li>
+                                <li><strong>Notifications :</strong> FCM</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-title">🔌 APIs Externes</div>
+                            <ul class="styled-list">
+                                <li><strong>Voix :</strong> Google Speech-to-Text</li>
+                                <li><strong>Géolocalisation :</strong> Google Maps/Places</li>
+                                <li><strong>SMS :</strong> Twilio ou équivalent local</li>
+                                <li><strong>Analytics :</strong> Firebase Analytics</li>
+                                <li><strong>Monitoring :</strong> Sentry</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Modèle de Données</h3>
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>Collection</th>
+                                <th>Champs Principaux</th>
+                                <th>Relations</th>
+                                <th>Index</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>users</strong></td>
+                                <td>id, phone, profileType, name, photoURL, city, disabilities[], createdAt</td>
+                                <td>→ ratings, → requests</td>
+                                <td>phone, city, profileType</td>
+                            </tr>
+                            <tr>
+                                <td><strong>helpers</strong></td>
+                                <td>userId, services[], description, availability, verified, rating, totalRatings</td>
+                                <td>← users, → requests</td>
+                                <td>services, rating, verified</td>
+                            </tr>
+                            <tr>
+                                <td><strong>requests</strong></td>
+                                <td>id, fromUserId, toHelperId, serviceType, status, scheduledFor, createdAt</td>
+                                <td>← users, ← helpers</td>
+                                <td>status, scheduledFor, fromUserId</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ratings</strong></td>
+                                <td>id, requestId, wasAdapted, comment, createdAt</td>
+                                <td>← requests</td>
+                                <td>wasAdapted, createdAt</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 6. Ergonomie et Design -->
+            <div class="section">
+                <h2 class="section-title">Ergonomie et Design (UI/UX)</h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Principes d'Accessibilité (WCAG 2.1 AA)</h3>
+                    <div class="grid-4">
+                        <div class="card">
+                            <div class="card-title">👁️ Perceptible</div>
+                            <ul class="styled-list">
+                                <li>Contraste 4.5:1 minimum</li>
+                                <li>Texte redimensionnable 200%</li>
+                                <li>Alternatives textuelles</li>
+                                <li>Couples forme-couleur</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">🕹️ Utilisable</div>
+                            <ul class="styled-list">
+                                <li>Clavier accessible</li>
+                                <li>Temps suffisant</li>
+                                <li>Pas de déclencheurs</li>
+                                <li>Navigation cohérente</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">🧠 Compréhensible</div>
+                            <ul class="styled-list">
+                                <li>Langage clair simple</li>
+                                <li>Fonctionnement prévisible</li>
+                                <li>Assistance saisie</li>
+                                <li>Messages d'erreur</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">💪 Robuste</div>
+                            <ul class="styled-list">
+                                <li>Compatibilité assistive tech</li>
+                                <li>Standards ouverts</li>
+                                <li>Validation continue</li>
+                                <li>Tests utilisateurs</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Guide de Style</h3>
+                    <div class="grid-3">
+                        <div class="card">
+                            <div class="card-title">🎨 Palette Couleurs</div>
+                            <p><strong>Primaire :</strong> #1A237E<br>
+                            <strong>Secondaire :</strong> #4A148C<br>
+                            <strong>Accent :</strong> #00BCD4<br>
+                            <strong>Succès :</strong> #4CAF50<br>
+                            <strong>Attention :</strong> #FF9800<br>
+                            <strong>Erreur :</strong> #F44336</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">🔤 Typographie</div>
+                            <p><strong>Primaire :</strong> Segoe UI<br>
+                            <strong>Taille base :</strong> 16px<br>
+                            <strong>Hauteur ligne :</strong> 1.6<br>
+                            <strong>Échelle :</strong> 1.250 (Major Third)<br>
+                            <strong>Poids :</strong> 400/600/700</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-title">📐 Espacements</div>
+                            <p><strong>Unité de base :</strong> 8px<br>
+                            <strong>Boutons :</strong> min 44×44px<br>
+                            <strong>Marges :</strong> 8/16/24/32/48px<br>
+                            <strong>Radius :</strong> 8px/12px/20px</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 7. Contraintes -->
+            <div class="section">
+                <h2 class="section-title">Contraintes</h2>
+                
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="card-title">💰 Budgétaires</div>
+                        <ul class="styled-list">
+                            <li>Budget total MVP : 650 MAD</li>
+                            <li>Équipe 100% stagiaires</li>
+                            <li>Utilisation outils gratuits</li>
+                            <li>Pas de marketing payant</li>
+                            <li>Infrastructure freemium</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-title">⏱️ Temporelles</div>
+                        <ul class="styled-list">
+                            <li>Durée MVP : 10 semaines</li>
+                            <li>Équipe à temps partiel</li>
+                            <li>Délais académiques</li>
+                            <li>Tests utilisateurs réels</li>
+                            <li>Présentation jury fin projet</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-title">🔧 Techniques</div>
+                        <ul class="styled-list">
+                            <li>Compatibilité vieux smartphones</li>
+                            <li>Connexion 3G minimum</li>
+                            <li>Stockage limité Firebase</li>
+                            <li>Reconnaissance vocale Darija</li>
+                            <li>Accessibilité WCAG 2.1 AA</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Contraintes Réglementaires</h3>
+                    <div class="highlight-box">
+                        <div class="highlight-title">📜 Conformité Légale</div>
+                        <ul class="styled-list">
+                            <li><strong>RGPD :</strong> Protection des données personnelles</li>
+                            <li><strong>Loi 97-13 :</strong> Droits des personnes handicapées au Maroc</li>
+                            <li><strong>CNPD :</strong> Commission Nationale de contrôle de la protection des Données</li>
+                            <li><strong>Accessibilité numérique :</strong> Standards internationaux WCAG</li>
+                            <li><strong>Droits d'auteur :</strong> Propriété intellectuelle du code</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 8. Plan de réalisation -->
+            <div class="section">
+                <h2 class="section-title">Plan de Réalisation / Planification</h2>
+                
+                <div class="gantt-container">
+                    <div class="gantt-chart">
+                        <div class="gantt-phase">
+                            <div class="phase-header">
+                                <div class="phase-title">Phase 1 : Conception & Design (Semaines 1-2)</div>
+                                <div>2 semaines</div>
+                            </div>
+                            <div class="phase-timeline">
+                                <div class="phase-duration" style="width: 20%;">Design & Prototypage</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gantt-phase">
+                            <div class="phase-header">
+                                <div class="phase-title">Phase 2 : Développement Core (Semaines 3-5)</div>
+                                <div>3 semaines</div>
+                            </div>
+                            <div class="phase-timeline">
+                                <div class="phase-duration" style="width: 30%;">Authentification & Profils</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gantt-phase">
+                            <div class="phase-header">
+                                <div class="phase-title">Phase 3 : Fonctionnalités Avancées (Semaines 6-8)</div>
+                                <div>3 semaines</div>
+                            </div>
+                            <div class="phase-timeline">
+                                <div class="phase-duration" style="width: 30%;">Recherche & Réservation</div>
+                            </div>
+                        </div>
+                        
+                        <div class="gantt-phase">
+                            <div class="phase-header">
+                                <div class="phase-title">Phase 4 : Tests & Finalisation (Semaines 9-10)</div>
+                                <div>2 semaines</div>
+                            </div>
+                            <div class="phase-timeline">
+                                <div class="phase-duration" style="width: 20%;">Validation & Préparation</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Livrables par Phase</h3>
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>Phase</th>
+                                <th>Livrables</th>
+                                <th>Échéance</th>
+                                <th>Responsable</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Phase 1</strong></td>
+                                <td>Maquettes Figma, User stories, Architecture technique</td>
+                                <td>J+14</td>
+                                <td>Designer UX/UI</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phase 2</strong></td>
+                                <td>Setup Firebase, Authentification, Gestion profils</td>
+                                <td>J+35</td>
+                                <td>Développeur Backend</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phase 3</strong></td>
+                                <td>Recherche vocale, Réservation, Notifications</td>
+                                <td>J+56</td>
+                                <td>Développeur Mobile</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phase 4</strong></td>
+                                <td>App testable, Documentation, Présentation jury</td>
+                                <td>J+70</td>
+                                <td>Équipe complète</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 9. Tests et validation -->
+            <div class="section">
+                <h2 class="section-title">Tests et Validation</h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Stratégie de Test</h3>
+                    <div class="grid-3">
+                        <div class="card">
+                            <div class="card-title">🧪 Tests Unitaires</div>
+                            <ul class="styled-list">
+                                <li>Couvrir 80% du code métier</li>
+                                <li>Jest + React Native Testing Library</li>
+                                <li>Tests Firebase Functions</li>
+                                <li>Validation logique métier</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-title">🔍 Tests d'Intégration</div>
+                            <ul class="styled-list">
+                                <li>Flux utilisateur complets</li>
+                                <li>Intégration APIs externes</li>
+                                <li>Performance sous charge</li>
+                                <li>Compatibilité cross-platform</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-title">👥 Tests Utilisateurs</div>
+                            <ul class="styled-list">
+                                <li>10 personnes handicapées</li>
+                                <li>5 accompagnateurs</li>
+                                <li>Tests d'accessibilité réels</li>
+                                <li>Feedback continu</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Critères d'Acceptation</h3>
+                    <div class="test-criteria">
+                        <div class="test-item">
+                            <div class="test-value">0</div>
+                            <p>Crash bloquants</p>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-value>>85%</div>
+                            <p>Satisfaction utilisateurs</p>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-value"><3s</div>
+                            <p>Temps de réponse</p>
+                        </div>
+                        <div class="test-item">
+                            <div class="test-value">100%</div>
+                            <p>WCAG 2.1 AA</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 10. Annexes -->
+            <div class="section">
+                <h2 class="section-title">Annexes</h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Glossaire des Termes</h3>
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>Terme</th>
+                                <th>Définition</th>
+                                <th>Contexte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>WCAG 2.1 AA</strong></td>
+                                <td>Web Content Accessibility Guidelines niveau AA</td>
+                                <td>Standard d'accessibilité numérique</td>
+                            </tr>
+                            <tr>
+                                <td><strong>MVP</strong></td>
+                                <td>Minimum Viable Product (Produit Minimum Viable)</td>
+                                <td>Version simplifiée pour validation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>OTP</strong></td>
+                                <td>One-Time Password (Mot de passe à usage unique)</td>
+                                <td>Validation SMS inscription</td>
+                            </tr>
+                            <tr>
+                                <td><strong>FCM</strong></td>
+                                <td>Firebase Cloud Messaging</td>
+                                <td>Système de notifications push</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">Références Techniques</h3>
+                    <div class="highlight-box">
+                        <ul class="styled-list">
+                            <li><strong>React Native Documentation :</strong> reactnative.dev</li>
+                            <li><strong>Firebase Documentation :</strong> firebase.google.com/docs</li>
+                            <li><strong>WCAG 2.1 Guidelines :</strong> w3.org/WAI/WCAG21</li>
+                            <li><strong>Google Speech-to-Text API :</strong> cloud.google.com/speech-to-text</li>
+                            <li><strong>Loi 97-13 Maroc :</strong> Droits des personnes handicapées</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="confidential">
+                DOCUMENT CONFIDENTIEL - PROPRIÉTÉ INTELLECTUELLE DIMA M3AK © 2024
+            </div>
+            <p><strong>DIMA M3AK</strong> - ديمة معاك</p>
+            <p>Contact : contact@dimam3ak.ma | Téléphone : +212 XXX XXX XXX</p>
+            <p>Adresse : [Adresse], [Ville], Maroc</p>
+        </div>
+    </div>
+    
+    <!-- BOUTON TÉLÉCHARGEMENT CORRIGÉ -->
+    <button class="download-btn" onclick="generatePDF()">
+        📥 Télécharger en PDF
+    </button>
+
+    <!-- Scripts pour générer le PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function generatePDF() {
+            const element = document.getElementById('pdf-content');
+            const btn = document.querySelector('.download-btn');
+            
+            // Sauvegarder le texte original du bouton
+            const originalText = btn.innerHTML;
+            
+            // Changer le bouton pendant la génération
+            btn.innerHTML = '⏳ Génération en cours...';
+            btn.style.opacity = '0.8';
+            btn.style.cursor = 'wait';
+            
+            // Options de configuration PDF
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: 'Cahier_Charges_DIMA_M3AK.pdf',
+                image: { 
+                    type: 'jpeg', 
+                    quality: 0.98 
+                },
+                html2canvas: { 
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait',
+                    compress: true
+                },
+                pagebreak: { 
+                    mode: ['avoid-all', 'css', 'legacy'],
+                    before: '.section'
+                }
+            };
+            
+            // Générer le PDF
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Restaurer le bouton après génération
+                btn.innerHTML = originalText;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                
+                // Message de confirmation
+                alert('PDF généré avec succès ! Téléchargement commencé.');
+            }).catch(err => {
+                console.error('Erreur génération PDF:', err);
+                btn.innerHTML = '❌ Erreur - Réessayer';
+                btn.style.background = 'linear-gradient(135deg, var(--danger-color), #d32f2f)';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = 'linear-gradient(135deg, var(--primary-color), var(--secondary-color))';
+                }, 3000);
+            });
+        }
+        
+        // Ajouter le support du raccourci clavier Ctrl+P
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                generatePDF();
+            }
+        });
+        
+        // Amélioration pour mobile
+        if ('ontouchstart' in window) {
+            document.querySelector('.download-btn').style.padding = '20px 30px';
+            document.querySelector('.download-btn').style.fontSize = '18px';
+        }
+    </script>
+</body>
+</html>
