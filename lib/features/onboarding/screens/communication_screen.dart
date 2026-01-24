@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../auth/screens/authorization_screen.dart';
 
 class CommunicationScreen extends StatelessWidget {
   final VoidCallback onNext;
@@ -20,7 +21,7 @@ class CommunicationScreen extends StatelessWidget {
           child: Container(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.all(16), // ⬅️ هامش خفيف بحال Figma
+              padding: const EdgeInsets.all(6), // ⬅️ هامش خفيف بحال Figma
               child: SizedBox.expand(
                 child: Image.asset(
                   'assets/images/onboarding_3.png',
@@ -57,7 +58,7 @@ class CommunicationScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 22,
+                      fontSize: 30,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -69,7 +70,7 @@ class CommunicationScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white70,
-                      fontSize: 15,
+                      fontSize: 20,
                     ),
                   ),
 
@@ -92,7 +93,14 @@ class CommunicationScreen extends StatelessWidget {
                     width: double.infinity,
                     height: 48,
                     child: ElevatedButton(
-                      onPressed: onNext,
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AuthorizationScreen(),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: const Color(0xFF0E7C7B),
@@ -102,10 +110,14 @@ class CommunicationScreen extends StatelessWidget {
                       ),
                       child: const Text(
                         'Suivant',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
+
 
                   const SizedBox(height: 8),
 
@@ -113,7 +125,11 @@ class CommunicationScreen extends StatelessWidget {
                     onPressed: () {},
                     child: const Text(
                       'Passer',
-                      style: TextStyle(color: Colors.white70),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400, // Regular
+                        color: Colors.white70,
+                      ),
                     ),
                   ),
                 ],

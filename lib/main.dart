@@ -12,7 +12,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
-     );
+
+      // 🔹 Theme عام للتطبيق كامل
+      theme: ThemeData(
+        fontFamily: 'Poppins', // ⬅️ الخط اللي درناه ف pubspec.yaml
+      ),
+
+      home: const SplashScreen(),
+    );
   }
 }

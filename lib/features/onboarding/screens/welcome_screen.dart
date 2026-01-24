@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../auth/screens/authorization_screen.dart';
+
 
 class WelcomeScreen extends StatelessWidget {
   final VoidCallback onNext;
@@ -20,7 +22,7 @@ class WelcomeScreen extends StatelessWidget {
           child: Container(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.all(16), // ⬅️ هامش خفيف بحال Figma
+              padding: const EdgeInsets.all(6), // ⬅️ هامش خفيف بحال Figma
               child: SizedBox.expand(
                 child: Image.asset(
                   'assets/images/onboarding_1.png',
@@ -57,7 +59,7 @@ class WelcomeScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 22,
+                      fontSize: 30,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -70,7 +72,7 @@ class WelcomeScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white70,
-                      fontSize: 15,
+                      fontSize: 20,
                     ),
                   ),
 
@@ -103,7 +105,9 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                       child: const Text(
                         'Suivant',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
@@ -111,10 +115,21 @@ class WelcomeScreen extends StatelessWidget {
                   const SizedBox(height: 8),
 
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AuthorizationScreen(),
+                        ),
+                      );
+                    },
                     child: const Text(
                       'Passer',
-                      style: TextStyle(color: Colors.white70),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400, // Regular
+                        color: Colors.white70,
+                      ),
                     ),
                   ),
                 ],
