@@ -1,145 +1,178 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import '../../voice/screens/voice_home_screen.dart';
 
 class AuthorizationScreen extends StatelessWidget {
   const AuthorizationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF7F8FA),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-
-              // 🔹 Title (فوق الصورة)
-              const Text(
-                'Autorisation\nd’accessibilité',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0A3D91),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
                 ),
-              ),
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: size.width * 0.06),
+                  child: Column(
+                    children: [
+                      SizedBox(height: size.height * 0.03),
 
-              const SizedBox(height: 20),
-
-              // 🔹 Illustration
-              Expanded(
-                flex: 4,
-                child: Image.asset(
-                  'assets/images/authorization.png',
-                  fit: BoxFit.contain,
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // 🔹 Description
-              const Text(
-                'Dima Meak a besoin d’accéder au micro\net à la lecture vocale.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500, // ⬅️ semi-bold
-                  color: Colors.black87,
-                  height: 1.5,
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // 🔹 Permissions list
-              const _PermissionItem(
-                icon: Icons.volume_up,
-                text:
-                    'Conversion texte → parole\nÉcoutez le contenu à haute voix.',
-              ),
-              const SizedBox(height: 12),
-              const _PermissionItem(
-                icon: Icons.mic,
-                text:
-                    'Reconnaissance vocale\nParlez pour rechercher ou naviguer.',
-              ),
-
-              const Spacer(),
-
-              // 🔹 Buttons
-              Row(
-                children: [
-                  // 🔹 Refuser (كبرناه فقط)
-                  Expanded(
-                    child: SizedBox(
-                      height: 48,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          // TODO: refuser → login ou home
-                        },
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                            color: Color(0xFF0E7C7B),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                            padding: const EdgeInsets.symmetric(vertical: 16), // ⬅️ كبّرناه
-                            minimumSize: const Size(double.infinity, 48), // ⬅️ نفس ارتفاع Autoris
-                        ),
-                        child: const Text(
-                          'Refuser',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF0E7C7B),
-                          ),
+                      // 🔹 Title
+                      Text(
+                        'Autorisation\nd’accessibilité',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: size.width * 0.075,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF0A3D91),
                         ),
                       ),
-                    ),
-                  ),
 
-                  const SizedBox(width: 12),
+                      SizedBox(height: size.height * 0.04),
 
-                  // 🔹 Autoriser (ما تبدّل والو)
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        // TODO: autoriser → next screen
-                      },
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        height: 48,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color(0xFF0A3D91),
-                              Color(0xFF0E7C7B),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Text(
-                          'Autoriser',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
+                      // 🔹 Illustration
+                      Image.asset(
+                        'assets/images/authorization.png',
+                        height: size.height * 0.32,
+                        fit: BoxFit.contain,
+                      ),
+
+                      SizedBox(height: size.height * 0.03),
+
+                      // 🔹 Description
+                      Text(
+                        'Dima Meak a besoin d’accéder au micro\net à la lecture vocale.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: size.width * 0.042,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                          height: 1.5,
                         ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
 
-              const SizedBox(height: 24),
-            ],
-          ),
+                      SizedBox(height: size.height * 0.04),
+
+                      // 🔹 Permissions list
+                      const _PermissionItem(
+                        icon: Icons.volume_up,
+                        text:
+                            'Conversion texte → parole\nÉcoutez le contenu à haute voix.',
+                      ),
+
+                      SizedBox(height: size.height * 0.025),
+
+                      const _PermissionItem(
+                        icon: Icons.mic,
+                        text:
+                            'Reconnaissance vocale\nParlez pour rechercher ou naviguer.',
+                      ),
+
+                      SizedBox(height: size.height * 0.06),
+
+                      // 🔹 Buttons
+                      Row(
+                        children: [
+                          // 🔹 Refuser
+                          Expanded(
+                            child: SizedBox(
+                              height: 48,
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  // continuer sans commande vocale
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                    color: Color(0xFF0E7C7B),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Refuser',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF0E7C7B),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(width: size.width * 0.04),
+
+                          // 🔹 Autoriser
+                          Expanded(
+                            child: InkWell(
+                              onTap: () async {
+                                final status =
+                                    await Permission.microphone.request();
+
+                                if (status.isGranted) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          const VoiceHomeScreen(),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Permission du micro refusée',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                height: 48,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Color(0xFF0A3D91),
+                                      Color(0xFF0E7C7B),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Text(
+                                  'Autoriser',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: size.height * 0.04),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -158,7 +191,8 @@ class _PermissionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final parts = text.split('\n'); // title + description
+    final size = MediaQuery.of(context).size;
+    final parts = text.split('\n');
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,32 +200,26 @@ class _PermissionItem extends StatelessWidget {
         Icon(
           icon,
           color: const Color(0xFF0E7C7B),
-          size: 24,
+          size: size.width * 0.06,
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: size.width * 0.03),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🔹 Title (Bold)
               Text(
                 parts[0],
-                style: const TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600, // ⬅️ Bold
+                style: TextStyle(
+                  fontSize: size.width * 0.042,
+                  fontWeight: FontWeight.w600,
                   color: Colors.black87,
                 ),
               ),
-
-              const SizedBox(height: 4),
-
-              // 🔹 Description
+              SizedBox(height: size.height * 0.005),
               Text(
                 parts.length > 1 ? parts[1] : '',
-                style: const TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: size.width * 0.038,
                   fontWeight: FontWeight.w400,
                   color: Colors.black54,
                   height: 1.4,
