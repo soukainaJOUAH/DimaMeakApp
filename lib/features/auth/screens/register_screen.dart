@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'register_utilisateur.dart';
+import 'register_aidant.dart';
+
+enum UserRole { utilisateur, aidant }
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -8,19 +12,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final sizePadding = const EdgeInsets.symmetric(horizontal: 24);
-
-  String? selectedRole; // Utilisateur / Aidant
-  String? selectedHandicap;
-
-  final List<String> roles = ['Utilisateur', 'Aidant'];
-  final List<String> handicaps = [
-    'Handicap visuel',
-    'Handicap moteur',
-    'Handicap auditif',
-    'Handicap mental',
-    'Autre',
-  ];
+  UserRole? _selectedRole;
 
   @override
   Widget build(BuildContext context) {
@@ -28,193 +20,213 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Color(0xFF0A3D91)),
+      ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: sizePadding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
               children: [
-                SizedBox(height: size.height * 0.04),
+                /// 🔹 CONTENT
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: size.width * 0.06),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: size.height * 0.02),
 
-                // 🔹 Title
-                const Center(
-                  child: Text(
-                    'Créer un compte',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 26,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF0A3D91),
+                        const Text(
+                          'Créer un compte',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF0A3D91),
+                          ),
+                        ),
+
+                        const SizedBox(height: 6),
+
+                        const Text(
+                          'Sélectionnez votre situation',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
+                        ),
+
+                        SizedBox(height: size.height * 0.03),
+
+                        /// 🔹 Utilisateur
+                        _RoleCard(
+                          title: 'Utilisateur',
+                          description:
+                              'Personne en situation de handicap qui cherche de l’aide',
+                          icon: Icons.accessible,
+                          selected: _selectedRole == UserRole.utilisateur,
+                          onTap: () {
+                            setState(() {
+                              _selectedRole = UserRole.utilisateur;
+                            });
+                          },
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        /// 🔹 Aidant
+                        _RoleCard(
+                          title: 'Aidant',
+                          description:
+                              'Personne qui propose des services d’accompagnement',
+                          icon: Icons.handshake,
+                          selected: _selectedRole == UserRole.aidant,
+                          onTap: () {
+                            setState(() {
+                              _selectedRole = UserRole.aidant;
+                            });
+                          },
+                        ),
+
+                        SizedBox(height: size.height * 0.04),
+
+                        /// 🔹 Button Continuer
+                        InkWell(
+                          onTap: _selectedRole == null
+                              ? null
+                              : () {
+                                  if (_selectedRole ==
+                                      UserRole.utilisateur) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            const RegisterUtilisateur(),
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            const RegisterAidant(),
+                                      ),
+                                    );
+                                  }
+                                },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            height: 48,
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xFF0A3D91),
+                                  Color(0xFF0E7C7B),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Text(
+                              'Continuer',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: size.height * 0.03),
+                      ],
                     ),
                   ),
                 ),
 
-                const SizedBox(height: 6),
+                /// 🔹 IMAGE BOTTOM (ديما لاصقة لتحت)
+                Image.asset(
+                  'assets/images/register_bottom.png',
+                  width: double.infinity,
+                  fit: BoxFit.contain,
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
 
-                const Center(
-                  child: Text(
-                    'Remplissez vos informations',
-                    style: TextStyle(
+/// 🔹 ROLE CARD
+class _RoleCard extends StatelessWidget {
+  final String title;
+  final String description;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _RoleCard({
+    required this.title,
+    required this.description,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: selected ? const Color(0xFFEAF2FF) : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected
+                ? const Color(0xFF0A3D91)
+                : Colors.grey.shade300,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: const Color(0xFF0A3D91)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
                       fontFamily: 'Poppins',
-                      fontSize: 14,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 13,
                       color: Colors.black54,
                     ),
                   ),
-                ),
-
-                SizedBox(height: size.height * 0.04),
-
-                _label('Nom'),
-                _input('Text'),
-
-                SizedBox(height: size.height * 0.02),
-
-                _label('Prénom'),
-                _input('Text'),
-
-                SizedBox(height: size.height * 0.02),
-
-                // 🔹 Role
-                _label('Vous êtes'),
-                _dropdown(
-                  value: selectedRole,
-                  hint: 'Sélectionnez votre rôle',
-                  items: roles,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedRole = value;
-                      if (value == 'Aidant') {
-                        selectedHandicap = null;
-                      }
-                    });
-                  },
-                ),
-
-                SizedBox(height: size.height * 0.02),
-
-                // 🔹 Handicap (only if Utilisateur)
-                if (selectedRole == 'Utilisateur') ...[
-                  _label('Votre situation'),
-                  _dropdown(
-                    value: selectedHandicap,
-                    hint: 'Sélectionnez votre situation',
-                    items: handicaps,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedHandicap = value;
-                      });
-                    },
-                  ),
-                  SizedBox(height: size.height * 0.02),
                 ],
-
-                _label('Email'),
-                _input('example@gmail.com'),
-
-                SizedBox(height: size.height * 0.02),
-
-                _label('Mot de passe'),
-                _input('********', obscure: true),
-
-                SizedBox(height: size.height * 0.04),
-
-                // 🔹 Register Button
-                InkWell(
-                  onTap: () {
-                    // TODO: Register logic
-                  },
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    height: 48,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF0A3D91),
-                          Color(0xFF0E7C7B),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Text(
-                      'S\'inscrire',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: size.height * 0.04),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // 🔹 Widgets helpers
-  Widget _label(String text) {
-    return Text(
-      text,
-      style: const TextStyle(
-        fontFamily: 'Poppins',
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-      ),
-    );
-  }
-
-  Widget _input(String hint, {bool obscure = false}) {
-    return TextField(
-      obscureText: obscure,
-      decoration: InputDecoration(
-        hintText: hint,
-        filled: true,
-        fillColor: const Color(0xFFF4F6FB),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
-      ),
-    );
-  }
-
-  Widget _dropdown({
-    required String? value,
-    required String hint,
-    required List<String> items,
-    required ValueChanged<String?> onChanged,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF4F6FB),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          hint: Text(hint),
-          isExpanded: true,
-          items: items
-              .map(
-                (item) => DropdownMenuItem(
-                  value: item,
-                  child: Text(item),
-                ),
-              )
-              .toList(),
-          onChanged: onChanged,
+          ],
         ),
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../auth/screens/login_screen.dart';
+import 'package:dima_m3ak/features/auth/screens/login_screen.dart';
+
+
 
 class CommunicationScreen extends StatelessWidget {
   final VoidCallback onNext;
@@ -147,7 +149,7 @@ class CommunicationScreen extends StatelessWidget {
       context,
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 400),
-        pageBuilder: (_, animation, __) => const LoginScreen(),
+        pageBuilder: (_, animation, __) =>  LoginScreen(),
         transitionsBuilder: (_, animation, __, child) {
           final slideAnimation = Tween<Offset>(
             begin: const Offset(1.0, 0.0),
