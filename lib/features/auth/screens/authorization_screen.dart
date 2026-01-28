@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../voice/screens/voice_home_screen.dart';
+import 'package:dima_m3ak/features/home/screens/home_screen.dart';
 
 class AuthorizationScreen extends StatelessWidget {
   const AuthorizationScreen({super.key});
@@ -88,8 +89,16 @@ class AuthorizationScreen extends StatelessWidget {
                               height: 48,
                               child: OutlinedButton(
                                 onPressed: () {
-                                  // continuer sans commande vocale
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => HomeScreen(
+                                        isVoiceEnabled: false,
+                                      ),
+                                    ),
+                                  );
                                 },
+
                                 style: OutlinedButton.styleFrom(
                                   side: const BorderSide(
                                     color: Color(0xFF0E7C7B),
@@ -116,27 +125,26 @@ class AuthorizationScreen extends StatelessWidget {
                           Expanded(
                             child: InkWell(
                               onTap: () async {
-                                final status =
-                                    await Permission.microphone.request();
+                                final status = await Permission.microphone.request();
 
                                 if (status.isGranted) {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) =>
-                                          const VoiceHomeScreen(),
+                                      builder: (_) => HomeScreen(
+                                        isVoiceEnabled: true,
+                                      ),
                                     ),
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text(
-                                        'Permission du micro refusée',
-                                      ),
+                                      content: Text('Permission du micro refusée'),
                                     ),
                                   );
                                 }
                               },
+
                               borderRadius: BorderRadius.circular(10),
                               child: Container(
                                 height: 48,

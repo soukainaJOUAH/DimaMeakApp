@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:dima_m3ak/features/home/screens/home_screen.dart';
+
 
 class RegisterAidant extends StatefulWidget {
   const RegisterAidant({super.key});
@@ -280,9 +282,16 @@ class _RegisterAidantState extends State<RegisterAidant> {
                             InkWell(
                               onTap: () {
                                 if (_formKey.currentState!.validate()) {
-                                  // TODO: redirect after register
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>  HomeScreen(isVoiceEnabled: false
+                                      ),
+                                    ),
+                                  );
                                 }
                               },
+
                               borderRadius:
                                   BorderRadius.circular(12),
                               child: Container(
@@ -301,7 +310,7 @@ class _RegisterAidantState extends State<RegisterAidant> {
                                       BorderRadius.circular(12),
                                 ),
                                 child: const Text(
-                                  'Continuer',
+                                  'S\'inscrire',
                                   style: TextStyle(
                                     fontFamily: 'Poppins',
                                     fontSize: 15,

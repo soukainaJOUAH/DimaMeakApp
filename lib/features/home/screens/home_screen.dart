@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final bool isVoiceEnabled;
+
+  const HomeScreen({
+    super.key,
+    required this.isVoiceEnabled,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -9,6 +14,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.isVoiceEnabled) {
+      // start voice listening
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

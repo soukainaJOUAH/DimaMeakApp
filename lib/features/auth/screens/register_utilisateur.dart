@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:dima_m3ak/features/auth/screens/authorization_screen.dart';
+
 
 class RegisterUtilisateur extends StatefulWidget {
   const RegisterUtilisateur({super.key});
@@ -244,30 +246,31 @@ class _RegisterUtilisateurState extends State<RegisterUtilisateur> {
                       /// 🔹 Button
                       InkWell(
                         onTap: () {
-                          if (_formKey.currentState!
-                              .validate()) {
-                            // NEXT STEP
+                          if (_formKey.currentState!.validate()) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>  AuthorizationScreen(),
+                              ),
+                            );
                           }
                         },
-                        borderRadius:
-                            BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12),
                         child: Container(
                           height: 48,
                           width: double.infinity,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            gradient:
-                                const LinearGradient(
+                            gradient: const LinearGradient(
                               colors: [
                                 Color(0xFF0A3D91),
                                 Color(0xFF0E7C7B),
                               ],
                             ),
-                            borderRadius:
-                                BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Text(
-                            'Continuer',
+                            "S'inscrire",
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 15,
@@ -277,6 +280,7 @@ class _RegisterUtilisateurState extends State<RegisterUtilisateur> {
                           ),
                         ),
                       ),
+
 
                       SizedBox(height: size.height * 0.05),
                     ],
