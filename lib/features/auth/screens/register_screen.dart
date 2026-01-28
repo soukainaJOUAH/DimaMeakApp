@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'register_utilisateur.dart';
 import 'register_aidant.dart';
+import 'package:dima_m3ak/core/enums/user_role.dart';
 
-enum UserRole { utilisateur, aidant }
+
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

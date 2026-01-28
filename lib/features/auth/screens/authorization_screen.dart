@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../voice/screens/voice_home_screen.dart';
 import 'package:dima_m3ak/features/home/screens/home_screen.dart';
+import '../../home/screens/home_screen.dart';
+import 'package:dima_m3ak/core/enums/user_role.dart';
+
+
 
 class AuthorizationScreen extends StatelessWidget {
   const AuthorizationScreen({super.key});
@@ -94,6 +98,7 @@ class AuthorizationScreen extends StatelessWidget {
                                     MaterialPageRoute(
                                       builder: (_) => HomeScreen(
                                         isVoiceEnabled: false,
+                                        role: UserRole.utilisateur,
                                       ),
                                     ),
                                   );
@@ -133,6 +138,7 @@ class AuthorizationScreen extends StatelessWidget {
                                     MaterialPageRoute(
                                       builder: (_) => HomeScreen(
                                         isVoiceEnabled: true,
+                                        role: UserRole.utilisateur,
                                       ),
                                     ),
                                   );

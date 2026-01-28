@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dima_m3ak/features/home/screens/home_screen.dart';
+import 'package:dima_m3ak/core/enums/user_role.dart';
 
 
 class RegisterAidant extends StatefulWidget {
@@ -285,7 +286,9 @@ class _RegisterAidantState extends State<RegisterAidant> {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) =>  HomeScreen(isVoiceEnabled: false
+                                      builder: (_) =>  HomeScreen(
+                                        isVoiceEnabled: false,
+                                        role: UserRole.aidant,
                                       ),
                                     ),
                                   );
