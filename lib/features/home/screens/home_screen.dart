@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:dima_m3ak/core/enums/user_role.dart';
 import '../utilisateur/home_utilisateur.dart';
 import '../aidant/home_aidant.dart';
-
+import '../../notifications/screens/notifications_screen.dart';
+import '../../profile/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isVoiceEnabled;
@@ -35,9 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
     Widget body;
 
     if (widget.role == UserRole.utilisateur) {
-      body = const HomeUtilisateur();
+      body =  HomeUtilisateur();
     } else {
-      body = const HomeAidant();
+      body =  HomeAidant();
     }
 
     return Scaffold(
@@ -50,7 +51,15 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: IconButton(
           icon: const Icon(Icons.notifications_none),
           color: Colors.black87,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => NotificationsScreen()
+
+              )
+            );
+          },
         ),
         actions: [
           Padding(
