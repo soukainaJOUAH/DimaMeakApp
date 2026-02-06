@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dima_m3ak/features/auth/screens/authorization_screen.dart';
-
+import 'register_utilisateur_step2.dart';
 
 class RegisterUtilisateur extends StatefulWidget {
   const RegisterUtilisateur({super.key});
@@ -14,33 +14,48 @@ class _RegisterUtilisateurState extends State<RegisterUtilisateur> {
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
 
-  String? _selectedHandicap;
+  // controllers / extra fields
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _emergencyNameController = TextEditingController();
+  final TextEditingController _emergencyPhoneController = TextEditingController();
+
+  bool _acceptedTerms = false;
+
+  // step0 validator (personal info only)
+  bool _validateStep0() {
+    if (_nameController.text.isEmpty ||
+        _dobController.text.isEmpty ||
+        _phoneController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _selectedHandicaps.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez remplir tous les champs requis de la première page.')),
+      );
+      return false;
+    }
+    if (!emailRegex.hasMatch(_emailController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Email invalide')));
+      return false;
+    }
+    return true;
+  }
+
+  // handicap options (multi-select)
+  final List<Map<String, dynamic>> handicaps = [
+    {'label': 'Mobilité', 'icon': Icons.accessible},
+    {'label': 'Visuel', 'icon': Icons.visibility_off},
+    {'label': 'Auditif', 'icon': Icons.hearing_disabled},
+    {'label': 'Mental (léger)', 'icon': Icons.psychology},
+  ];
+  final Set<String> _selectedHandicaps = {};
 
   final emailRegex =
       RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-
-  final List<Map<String, dynamic>> handicaps = [
-    {
-      'label': 'Handicap moteur',
-      'icon': Icons.accessible,
-    },
-    {
-      'label': 'Handicap visuel',
-      'icon': Icons.visibility_off,
-    },
-    {
-      'label': 'Handicap auditif',
-      'icon': Icons.hearing_disabled,
-    },
-    {
-      'label': 'Handicap mental',
-      'icon': Icons.psychology,
-    },
-    {
-      'label': 'Autre',
-      'icon': Icons.more_horiz,
-    },
-  ];
 
   InputDecoration _inputDecoration(String hint,
       {Widget? prefixIcon, Widget? suffixIcon}) {
@@ -92,213 +107,218 @@ class _RegisterUtilisateurState extends State<RegisterUtilisateur> {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: size.width * 0.06),
-                  child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: size.height * 0.02),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: size.height * 0.02),
 
-                      const Text(
-                        'Créer un compte',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF0A3D91),
-                        ),
-                      ),
-
-                      const SizedBox(height: 6),
-
-                      const Text(
-                        'Informations utilisateur',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 14,
-                          color: Colors.black54,
-                        ),
-                      ),
-
-                      SizedBox(height: size.height * 0.03),
-
-                      /// 🔹 Nom
-                      const _Label('Nom complet'),
-                      TextFormField(
-                        decoration: _inputDecoration(
-                          'Entrez votre nom',
-                          prefixIcon:
-                              const Icon(Icons.person),
-                        ),
-                        validator: (value) =>
-                            value == null || value.isEmpty
-                                ? 'Champ requis'
-                                : null,
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      /// 🔹 Email
-                      const _Label('Email'),
-                      TextFormField(
-                        keyboardType:
-                            TextInputType.emailAddress,
-                        decoration: _inputDecoration(
-                          'Entrez votre email',
-                          prefixIcon:
-                              const Icon(Icons.email),
-                        ),
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty) {
-                            return 'Email requis';
-                          }
-                          if (!emailRegex
-                              .hasMatch(value)) {
-                            return 'Email invalide';
-                          }
-                          return null;
-                        },
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      /// 🔹 Type de handicap
-                      const _Label(
-                          'Type de situation de handicap'),
-                      DropdownButtonFormField<String>(
-                        value: _selectedHandicap,
-                        decoration: _inputDecoration(
-                          'Sélectionnez votre situation',
-                          prefixIcon: const Icon(
-                              Icons.accessible),
-                        ),
-                        items: handicaps.map((h) {
-                          return DropdownMenuItem<String>(
-                            value: h['label'],
-                            child: Row(
-                              children: [
-                                Icon(
-                                  h['icon'],
-                                  size: 18,
-                                  color:
-                                      const Color(0xFF0A3D91),
-                                ),
-                                const SizedBox(width: 10),
-                                Text(h['label']),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedHandicap = value;
-                          });
-                        },
-                        validator: (value) =>
-                            value == null
-                                ? 'Champ requis'
-                                : null,
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      /// 🔹 Mot de passe
-                      const _Label('Mot de passe'),
-                      TextFormField(
-                        obscureText: _obscurePassword,
-                        decoration: _inputDecoration(
-                          'Entrez votre mot de passe',
-                          prefixIcon:
-                              const Icon(Icons.lock),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              color:
-                                  const Color(0xFF0386D0),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _obscurePassword =
-                                    !_obscurePassword;
-                              });
-                            },
+                        const Text(
+                          'Créer un compte',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF0A3D91),
                           ),
                         ),
-                        validator: (value) =>
-                            value == null ||
-                                    value.length < 6
-                                ? 'Minimum 6 caractères'
-                                : null,
-                      ),
 
-                      SizedBox(height: size.height * 0.04),
+                        const SizedBox(height: 6),
 
-                      /// 🔹 Button
-                      InkWell(
-                        onTap: () {
-                          if (_formKey.currentState!.validate()) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>  AuthorizationScreen(),
-                              ),
+                        const Text(
+                          'Informations utilisateur',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
+                        ),
+
+                        SizedBox(height: size.height * 0.03),
+
+                        // Step 0 fields
+                        /// 🔹 Nom
+                        const _Label('Nom complet'),
+                        TextFormField(
+                          controller: _nameController,
+                          decoration: _inputDecoration('Entrez votre nom', prefixIcon: const Icon(Icons.person)),
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        /// 🔹 Date de naissance
+                        const _Label('Date de naissance'),
+                        TextFormField(
+                          controller: _dobController,
+                          readOnly: true,
+                          decoration: _inputDecoration('Sélectionnez la date de naissance', prefixIcon: const Icon(Icons.cake)),
+                          onTap: () async {
+                            final today = DateTime.now();
+                            final picked = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime(today.year - 25),
+                              firstDate: DateTime(1900),
+                              lastDate: today,
                             );
-                          }
-                        },
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          height: 48,
-                          width: double.infinity,
-                          alignment: Alignment.center,
+                            if (picked != null) {
+                              _dobController.text = '${picked.day}/${picked.month}/${picked.year}';
+                            }
+                          },
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        /// 🔹 Phone number
+                        const _Label('Téléphone'),
+                        TextFormField(
+                          controller: _phoneController,
+                          keyboardType: TextInputType.phone,
+                          decoration: _inputDecoration('Entrez votre numéro de téléphone', prefixIcon: const Icon(Icons.phone)),
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        /// 🔹 Email (required)
+                        const _Label('Email'),
+                        TextFormField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: _inputDecoration('Entrez votre email', prefixIcon: const Icon(Icons.email)),
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        /// 🔹 Type de handicap (choix multiple)
+                        const _Label('Type de situation de handicap'),
+                        Container(
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [
-                                Color(0xFF0A3D91),
-                                Color(0xFF0E7C7B),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
+                            color: const Color(0xFFF4F6FB),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Text(
-                            "S'inscrire",
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
+                          child: Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: handicaps.map((h) {
+                              final label = h['label'] as String;
+                              final isSelected = _selectedHandicaps.contains(label);
+                              return InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    if (isSelected) {
+                                      _selectedHandicaps.remove(label);
+                                    } else {
+                                      _selectedHandicaps.add(label);
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: isSelected ? const Color(0xFF0386D0) : Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: isSelected ? const Color(0xFF0386D0) : Colors.grey.shade300,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        h['icon'],
+                                        size: 16,
+                                        color: isSelected ? Colors.white : const Color(0xFF0A3D91),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        label,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: isSelected ? Colors.white : Colors.black87,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                           ),
                         ),
-                      ),
 
+                        const SizedBox(height: 12),
 
-                      SizedBox(height: size.height * 0.05),
-                    ],
+                        const SizedBox(height: 24),
+
+                        // Navigation: push Step 2 when Step 0 is valid
+                        InkWell(
+                          onTap: () {
+                            if (_validateStep0()) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => RegisterUtilisateurStep2(
+                                    name: _nameController.text,
+                                    dob: _dobController.text,
+                                    phone: _phoneController.text,
+                                    email: _emailController.text,
+                                    handicaps: _selectedHandicaps.toList(),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            height: 48,
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(colors: [Color(0xFF0A3D91), Color(0xFF0E7C7B)]),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Text('Suivant', style: TextStyle(fontFamily: 'Poppins', fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white)),
+                          ),
+                        ),
+
+                        SizedBox(height: size.height * 0.05),
+                      ],
+                    ),
                   ),
                 ),
-
-                /// 🔹 Bottom image (بحال register_screen)
-                Image.asset(
-                  'assets/images/register_bottom.png',
-                  height: size.height * 0.25,
-                  fit: BoxFit.contain,
-                ),
-              ],
+              ),
             ),
-          ),
+
+            // bottom image stays fixed at the bottom of the page
+            Image.asset(
+              'assets/images/register_bottom.png',
+              height: size.height * 0.25,
+              fit: BoxFit.contain,
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _dobController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _emergencyNameController.dispose();
+    _emergencyPhoneController.dispose();
+    super.dispose();
   }
 }
 

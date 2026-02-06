@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/favorites_service.dart';
 
 enum SearchTab { accompagnant, association }
 
@@ -12,33 +13,42 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   SearchTab _selectedTab = SearchTab.accompagnant;
   String _selectedFilter = 'Tous';
+  late final List<Map<String, dynamic>> _profiles;
 
-  final List<Map<String, dynamic>> _profiles = [
-    {
-      'name': 'Samira Dmiras',
-      'type': 'accompagnant',
-      'rating': 4.5,
-      'disponible': true,
-      'verifie': true,
-      'favorite': false,
-    },
-    {
-      'name': 'Karim Naji',
-      'type': 'accompagnant',
-      'rating': 4.5,
-      'disponible': false,
-      'verifie': true,
-      'favorite': false,
-    },
-    {
-      'name': 'Association Rahma',
-      'type': 'association',
-      'rating': 4.7,
-      'disponible': true,
-      'verifie': true,
-      'favorite': false,
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+
+    _profiles = [
+      {
+        'name': 'Samira Dmiras',
+        'type': 'accompagnant',
+        'rating': 4.5,
+        'disponible': true,
+        'verifie': true,
+      },
+      {
+        'name': 'Karim Naji',
+        'type': 'accompagnant',
+        'rating': 4.5,
+        'disponible': false,
+        'verifie': true,
+      },
+      {
+        'name': 'Association Rahma',
+        'type': 'association',
+        'rating': 4.7,
+        'disponible': true,
+        'verifie': true,
+      },
+    ].map((profile) {
+      final name = profile['name'] as String? ?? '';
+      return {
+        ...profile,
+        'favorite': FavoritesService.instance.isFavorite(name),
+      };
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +62,11 @@ class _SearchScreenState extends State<SearchScreen> {
       return true;
     }).toList();
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const SizedBox(height: 12),
-
             /// 🔍 Search bar
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -172,6 +179,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     onFavoriteToggle: () {
                       setState(() {
                         profile['favorite'] = !profile['favorite'];
+                        FavoritesService.instance.toggleFavorite(profile);
                       });
                     },
                     onDetails: () {

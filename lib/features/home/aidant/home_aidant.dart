@@ -5,12 +5,15 @@ class HomeAidant extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Home Aidant',
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
+    return Scaffold(
+      appBar: AppBar(title: const Text('Accueil — Aidant')),
+      body: const Center(
+        child: Text(
+          'Bienvenue sur la page d\'accueil Aidant',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

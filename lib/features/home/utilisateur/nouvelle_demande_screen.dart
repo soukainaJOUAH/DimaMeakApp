@@ -5,8 +5,10 @@ class NouvelleDemandeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Nouvelle demande')),
+    return SafeArea(
+      child: Center(
+        child: Text('Nouvelle demande', style: Theme.of(context).textTheme.titleLarge),
+      ),
     );
   }
 }

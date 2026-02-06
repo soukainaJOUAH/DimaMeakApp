@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:dima_m3ak/features/home/screens/home_screen.dart';
-import 'package:dima_m3ak/core/enums/user_role.dart';
-
+import 'package:dima_m3ak/features/home/aidant/home_aidant.dart';
+import 'register_aidant_step2.dart';
 
 class RegisterAidant extends StatefulWidget {
   const RegisterAidant({super.key});
@@ -14,58 +13,51 @@ class _RegisterAidantState extends State<RegisterAidant> {
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
 
-  String? _selectedService;
+  // controllers / fields
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+  final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _gpsController = TextEditingController();
+  final TextEditingController _radiusController = TextEditingController();
+  final TextEditingController _cinController = TextEditingController();
+
+  // added: controllers referenced in dispose()
+  final TextEditingController _emergencyNameController = TextEditingController();
+  final TextEditingController _emergencyPhoneController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+
+  // added: missing fields
+  late TextEditingController _hoursFromController;
+  late TextEditingController _hoursToController;
+  late Set<String> _selectedDays;
+  bool _emergencyAvailable = false;
+
+  bool _acceptedTerms = false;
+
+  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+  // types of help
+  final List<Map<String, dynamic>> helpTypes = [
+    {'label': 'Accompagnement', 'icon': Icons.person_add},
+    {'label': 'Transport', 'icon': Icons.local_taxi},
+    {'label': 'Assistance quotidienne', 'icon': Icons.cleaning_services},
+    {'label': 'Aide médicale légère', 'icon': Icons.medical_services},
+  ];
+  final Set<String> _selectedHelpTypes = {};
+
+  // city list (Morocco)
+  final List<String> moroccoCities = [
+    'Casablanca','Rabat','Fès','Marrakech','Tanger','Agadir','Meknès','Tétouan','Oujda',
+    'Kénitra','El Jadida','Safi','Khouribga','Beni Mellal','Settat','Khemisset','Nador','Chefchaouen','Essaouira'
+  ];
   String? _selectedCity;
 
-  final emailRegex =
-      RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-
-  final List<Map<String, dynamic>> services = [
-    {'label': 'Accompagnement médical', 'icon': Icons.local_hospital},
-    {'label': 'Aide à la mobilité', 'icon': Icons.directions_walk},
-    {'label': 'Aide administrative', 'icon': Icons.description},
-    {'label': 'Soutien scolaire', 'icon': Icons.school},
-    {'label': 'Coiffure / soins personnels', 'icon': Icons.content_cut},
-    {'label': 'Autre', 'icon': Icons.more_horiz},
-  ];
-
-  final List<String> villes = [
-    'Casablanca',
-    'Rabat',
-    'Marrakech',
-    'Fès',
-    'Tanger',
-    'Agadir',
-    'Oujda',
-    'Meknès',
-    'Salè',
-    'Kenitra',
-    'Nador',
-    'El Jadida',
-    'Safi',
-    'Khouribga',
-    'Bèni Mellal',
-    'Taza',
-    'Settat',
-    'Ksar El Kebir',
-    'Larache',
-    'Guelmim',
-    'Tiznit',
-    'Ouarzazate',
-    'Dakhla',
-    'Laayoune',
-    'Ifrane',
-    'Azrou',
-    'Chefchaouen',
-    'Sidi Kacem',
-    'Sidi Slimane',
-  ];
-
-  InputDecoration _inputDecoration(
-    String hint, {
-    Widget? prefixIcon,
-    Widget? suffixIcon,
-  }) {
+  InputDecoration _inputDecoration(String hint, {Widget? prefixIcon, Widget? suffixIcon}) {
     return InputDecoration(
       hintText: hint,
       filled: true,
@@ -74,14 +66,11 @@ class _RegisterAidantState extends State<RegisterAidant> {
       suffixIcon: suffixIcon,
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide.none,
+        borderSide: const BorderSide(color: Colors.transparent),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(
-          color: Color(0xFF0386D0),
-          width: 2,
-        ),
+        borderSide: const BorderSide(color: Color(0xFF0386D0), width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -91,9 +80,41 @@ class _RegisterAidantState extends State<RegisterAidant> {
         borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: Colors.red, width: 2),
       ),
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     );
+  }
+
+  bool _validateStep0() {
+    if (_nameController.text.isEmpty ||
+        _dobController.text.isEmpty ||
+        _phoneController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Veuillez remplir tous les champs requis de la première page.')));
+      return false;
+    }
+    if (!emailRegex.hasMatch(_emailController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Email invalide')));
+      return false;
+    }
+    if (_passwordController.text.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Minimum 6 caractères pour le mot de passe')));
+      return false;
+    }
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Les mots de passe ne correspondent pas')));
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _hoursFromController = TextEditingController();
+    _hoursToController = TextEditingController();
+    _selectedDays = {};
   }
 
   @override
@@ -103,248 +124,150 @@ class _RegisterAidantState extends State<RegisterAidant> {
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: size.width * 0.06,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: size.height * 0.02),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      SizedBox(height: size.height * 0.02),
+                      const Text(
+                        'Créer un compte (Aidant)',
+                        style: TextStyle(fontFamily: 'Poppins', fontSize: 24, fontWeight: FontWeight.w600, color: Color(0xFF0A3D91)),
+                      ),
+                      const SizedBox(height: 6),
+                      const Text('Informations aidant', style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: Colors.black54)),
+                      SizedBox(height: size.height * 0.03),
 
-                            const Text(
-                              'Créer un compte',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF0A3D91),
-                              ),
-                            ),
+                      // Full name
+                      const _Label('Nom complet'),
+                      TextFormField(controller: _nameController, decoration: _inputDecoration('Entrez votre nom', prefixIcon: const Icon(Icons.person))),
+                      const SizedBox(height: 12),
 
-                            const SizedBox(height: 6),
+                      // DOB
+                      const _Label('Date de naissance'),
+                      TextFormField(
+                        controller: _dobController,
+                        readOnly: true,
+                        decoration: _inputDecoration('Sélectionnez la date de naissance', prefixIcon: const Icon(Icons.cake)),
+                        onTap: () async {
+                          final today = DateTime.now();
+                          final picked = await showDatePicker(context: context, initialDate: DateTime(today.year - 30), firstDate: DateTime(1900), lastDate: today);
+                          if (picked != null) _dobController.text = '${picked.day}/${picked.month}/${picked.year}';
+                        },
+                      ),
+                      const SizedBox(height: 12),
 
-                            const Text(
-                              'Informations aidant',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 14,
-                                color: Colors.black54,
-                              ),
-                            ),
+                      // Phone
+                      const _Label('Téléphone'),
+                      TextFormField(controller: _phoneController, keyboardType: TextInputType.phone, decoration: _inputDecoration('Entrez votre numéro de téléphone', prefixIcon: const Icon(Icons.phone))),
+                      const SizedBox(height: 12),
 
-                            SizedBox(height: size.height * 0.03),
+                      // Email (required)
+                      const _Label('Email'),
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: _inputDecoration('Entrez votre email', prefixIcon: const Icon(Icons.email)),
+                      ),
+                      const SizedBox(height: 12),
 
-                            /// 🔹 Nom
-                            const _Label('Nom complet'),
-                            TextFormField(
-                              decoration: _inputDecoration(
-                                'Entrez votre nom',
-                                prefixIcon: const Icon(Icons.person),
-                              ),
-                              validator: (v) =>
-                                  v == null || v.isEmpty
-                                      ? 'Champ requis'
-                                      : null,
-                            ),
+                      // Password
+                      const _Label('Mot de passe'),
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: _obscurePassword,
+                        decoration: _inputDecoration('Entrez votre mot de passe', prefixIcon: const Icon(Icons.lock), suffixIcon: IconButton(icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility, color: const Color(0xFF0386D0)), onPressed: () => setState(() => _obscurePassword = !_obscurePassword))),
+                        validator: (value) => value == null || value.length < 6 ? 'Minimum 6 caractères' : null,
+                      ),
+                      const SizedBox(height: 12),
 
-                            const SizedBox(height: 12),
+                      // Confirm password
+                      const _Label('Confirmer le mot de passe'),
+                      TextFormField(
+                        controller: _confirmPasswordController,
+                        obscureText: _obscurePassword,
+                        decoration: _inputDecoration('Confirmez votre mot de passe', prefixIcon: const Icon(Icons.lock)),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) return 'Champ requis';
+                          if (value != _passwordController.text) return 'Les mots de passe ne correspondent pas';
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
 
-                            /// 🔹 Email
-                            const _Label('Email'),
-                            TextFormField(
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: _inputDecoration(
-                                'Entrez votre email',
-                                prefixIcon: const Icon(Icons.email),
-                              ),
-                              validator: (v) {
-                                if (v == null || v.isEmpty) {
-                                  return 'Email requis';
-                                }
-                                if (!emailRegex.hasMatch(v)) {
-                                  return 'Email invalide';
-                                }
-                                return null;
-                              },
-                            ),
+                      
 
-                            const SizedBox(height: 12),
-
-                            /// 🔹 Service
-                            const _Label('Service proposé'),
-                            DropdownButtonFormField<String>(
-                              value: _selectedService,
-                              decoration: _inputDecoration(
-                                'Choisissez un service',
-                                prefixIcon:
-                                    const Icon(Icons.handshake),
-                              ),
-                              items: services
-                                  .map<DropdownMenuItem<String>>(
-                                      (s) {
-                                return DropdownMenuItem<String>(
-                                  value: s['label'] as String,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        s['icon'] as IconData,
-                                        size: 18,
-                                        color: const Color(0xFF0A3D91),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Text(s['label'] as String),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedService = value;
-                                });
-                              },
-                              validator: (value) =>
-                                  value == null ? 'Champ requis' : null,
-                            ),
-
-                            const SizedBox(height: 12),
-
-                            /// 🔹 Ville
-                            const _Label('Ville'),
-                            DropdownButtonFormField<String>(
-                              value: _selectedCity,
-                              decoration: _inputDecoration(
-                                'Sélectionnez votre ville',
-                                prefixIcon:
-                                    const Icon(Icons.location_on),
-                              ),
-                              items: villes
-                                  .map<DropdownMenuItem<String>>(
-                                      (v) {
-                                return DropdownMenuItem<String>(
-                                  value: v,
-                                  child: Text(v),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedCity = value;
-                                });
-                              },
-                              validator: (value) =>
-                                  value == null ? 'Ville requise' : null,
-                            ),
-
-                            const SizedBox(height: 12),
-
-                            /// 🔹 Mot de passe
-                            const _Label('Mot de passe'),
-                            TextFormField(
-                              obscureText: _obscurePassword,
-                              decoration: _inputDecoration(
-                                'Entrez votre mot de passe',
-                                prefixIcon: const Icon(Icons.lock),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _obscurePassword
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                    color:
-                                        const Color(0xFF0386D0),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _obscurePassword =
-                                          !_obscurePassword;
-                                    });
-                                  },
+                      // Navigation controls -> Next opens step2
+                      const SizedBox(height: 12),
+                      InkWell(
+                        onTap: () {
+                          if (_validateStep0()) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => RegisterAidantStep2(
+                                  name: _nameController.text,
+                                  dob: _dobController.text,
+                                  phone: _phoneController.text,
+                                  email: _emailController.text,
+                                    password: _passwordController.text,
+                                  helpTypes: _selectedHelpTypes.toList(),
+                                  days: _selectedDays.toList(),
+                                  hoursFrom: _hoursFromController.text,
+                                  hoursTo: _hoursToController.text,
+                                  emergencyAvailable: _emergencyAvailable,
+                                  city: _selectedCity ?? '',
+                                  gps: _gpsController.text,
+                                  radius: _radiusController.text,
+                                  cin: _cinController.text,
                                 ),
                               ),
-                              validator: (v) =>
-                                  v == null || v.length < 6
-                                      ? 'Minimum 6 caractères'
-                                      : null,
-                            ),
-
-                            SizedBox(height: size.height * 0.04),
-
-                            /// 🔹 Button
-                            InkWell(
-                              onTap: () {
-                                if (_formKey.currentState!.validate()) {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) =>  HomeScreen(
-                                        isVoiceEnabled: false,
-                                        role: UserRole.aidant,
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
-
-                              borderRadius:
-                                  BorderRadius.circular(12),
-                              child: Container(
-                                height: 48,
-                                width: double.infinity,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  gradient:
-                                      const LinearGradient(
-                                    colors: [
-                                      Color(0xFF0A3D91),
-                                      Color(0xFF0E7C7B),
-                                    ],
-                                  ),
-                                  borderRadius:
-                                      BorderRadius.circular(12),
-                                ),
-                                child: const Text(
-                                  'S\'inscrire',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 15,
-                                    fontWeight:
-                                        FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(height: size.height * 0.04),
-                          ],
+                            );
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          height: 48,
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0xFF0A3D91), Color(0xFF0E7C7B)]), borderRadius: BorderRadius.circular(12)),
+                          child: const Text('Suivant', style: TextStyle(fontFamily: 'Poppins', fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white)),
                         ),
                       ),
 
-                      /// 🔹 Bottom image (ديما لتحت)
-                      Image.asset(
-                        'assets/images/register_bottom.png',
-                        width: double.infinity,
-                        fit: BoxFit.contain,
-                      ),
-                    ],
+                      SizedBox(height: size.height * 0.05),
+                    ]),
                   ),
                 ),
               ),
-            );
-          },
+            ),
+
+            // bottom image stays fixed at the bottom of the page
+            Image.asset('assets/images/register_bottom.png', height: size.height * 0.25, fit: BoxFit.contain),
+          ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _dobController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _emergencyNameController.dispose();
+    _emergencyPhoneController.dispose();
+    _locationController.dispose();
+    _hoursFromController.dispose();
+    _hoursToController.dispose();
+    super.dispose();
   }
 }
 
@@ -356,14 +279,7 @@ class _Label extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontFamily: 'Poppins',
-          fontSize: 13,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
+      child: Text(text, style: const TextStyle(fontFamily: 'Poppins', fontSize: 13, fontWeight: FontWeight.w500)),
     );
   }
 }
