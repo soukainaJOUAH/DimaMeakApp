@@ -17,6 +17,7 @@ class HomeUtilisateur extends StatefulWidget {
 }
 
 class _HomeUtilisateurState extends State<HomeUtilisateur> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
   int _hoveredIndex = -1;
   bool _hoveringNotification = false;
@@ -27,12 +28,56 @@ class _HomeUtilisateurState extends State<HomeUtilisateur> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: _buildHeader(context, _selectedIndex),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: _buildBody(size),
       ),
-      // call the footer method that lives on this State (so it can call setState and access _hoveredIndex)
+      endDrawer: Drawer(
+        child: SafeArea(
+          child: Container(
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFFDFE4EE),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              children: [
+                Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    Container(
+                      height: 88,
+                      width: 88,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFF0A3D91), width: 2),
+                        color: Colors.white,
+                      ),
+                      child: const Icon(Icons.person, size: 48, color: Colors.grey),
+                    ),
+                    Container(
+                      height: 26,
+                      width: 26,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0xFF0E7C7B),
+                      ),
+                      child: const Icon(Icons.edit, size: 14, color: Colors.white),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                const Text('Nom', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                const SizedBox(height: 4),
+                const Text('bhrjegrlvdw@gmail.com', style: TextStyle(fontSize: 12, color: Colors.black54)),
+              ],
+            ),
+          ),
+        ),
+      ),
       bottomNavigationBar: _buildFooter(context, _selectedIndex),
     );
   }
@@ -138,7 +183,7 @@ class _HomeUtilisateurState extends State<HomeUtilisateur> {
                   onEnter: (_) => setState(() => _hoveringProfile = true),
                   onExit: (_) => setState(() => _hoveringProfile = false),
                   child: GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen())),
+                    onTap: () => _scaffoldKey.currentState?.openEndDrawer(),
                     behavior: HitTestBehavior.opaque,
                     child: Container(
                       width: 44,

@@ -1,7 +1,30 @@
 import 'package:flutter/material.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  final bool openDrawerOnLoad;
+
+  const ProfileScreen({
+    super.key,
+    this.openDrawerOnLoad = false,
+  });
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _openedOnce = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!widget.openDrawerOnLoad || _openedOnce) return;
+    _openedOnce = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scaffoldKey.currentState?.openEndDrawer();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -9,6 +32,7 @@ class ProfileScreen extends StatelessWidget {
     const accent = Color(0xFF0E7C7B);
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: const Color(0xFFF4F6FB),
       appBar: AppBar(
         backgroundColor: const Color(0xFFDFE4EE),
@@ -164,6 +188,9 @@ class ProfileScreen extends StatelessWidget {
             ],
           ),
         ],
+      ),
+      endDrawer: Drawer(
+        // ...existing code...
       ),
     );
   }
