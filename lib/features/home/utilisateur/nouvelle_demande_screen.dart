@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'notifications_screen.dart';
-import 'profile_screen.dart';
+import '../../notifications/screens/notifications_screen.dart';
+import '../../profile/screens/profile_screen.dart';
 
 enum _SearchTab { accompagnant, association }
 

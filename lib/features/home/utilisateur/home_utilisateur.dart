@@ -4,8 +4,8 @@ import 'search/search_screen.dart';
 import 'map_screen.dart';
 import 'favorites_screen.dart';
 import 'settings_screen.dart';
-import 'notifications_screen.dart';
-import 'profile_screen.dart';
+import '../../notifications/screens/notifications_screen.dart';
+import '../../profile/screens/profile_screen.dart';
 import 'nouvelle_demande_screen.dart';
 
 // Replace Stateless HomeUtilisateur with Stateful implementation

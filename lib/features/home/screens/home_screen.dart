@@ -3,7 +3,6 @@ import 'package:dima_m3ak/core/enums/user_role.dart';
 import '../utilisateur/home_utilisateur.dart';
 import '../aidant/home_aidant.dart';
 import '../../notifications/screens/notifications_screen.dart';
-import '../../profile/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isVoiceEnabled;
