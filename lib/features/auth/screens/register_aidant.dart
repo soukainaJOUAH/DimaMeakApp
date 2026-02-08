@@ -135,7 +135,7 @@ class _RegisterAidantState extends State<RegisterAidant> {
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       SizedBox(height: size.height * 0.02),
                       const Text(
-                        'Créer un compte (Aidant)',
+                        'Créer un compte',
                         style: TextStyle(fontFamily: 'Poppins', fontSize: 24, fontWeight: FontWeight.w600, color: Color(0xFF0A3D91)),
                       ),
                       const SizedBox(height: 6),
@@ -240,14 +240,14 @@ class _RegisterAidantState extends State<RegisterAidant> {
                       ),
 
                       SizedBox(height: size.height * 0.05),
+
+                      // bottom image stays fixed at the bottom of the page
+                      Image.asset('assets/images/register_bottom.png', height: size.height * 0.25, fit: BoxFit.contain),
                     ]),
                   ),
                 ),
               ),
             ),
-
-            // bottom image stays fixed at the bottom of the page
-            Image.asset('assets/images/register_bottom.png', height: size.height * 0.25, fit: BoxFit.contain),
           ],
         ),
       ),

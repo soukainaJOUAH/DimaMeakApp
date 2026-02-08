@@ -458,17 +458,17 @@ class _RegisterAidantStep2State extends State<RegisterAidantStep2> {
                           ],
                         ),
                         SizedBox(height: size.height * 0.05),
+
+                        Image.asset(
+                          'assets/images/register_bottom.png',
+                          height: size.height * 0.25,
+                          fit: BoxFit.contain,
+                        ),
                       ],
                     ),
                   ),
                 ),
               ),
-            ),
-
-            Image.asset(
-              'assets/images/register_bottom.png',
-              height: size.height * 0.25,
-              fit: BoxFit.contain,
             ),
           ],
         ),

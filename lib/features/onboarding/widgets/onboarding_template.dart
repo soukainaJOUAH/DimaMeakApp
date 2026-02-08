@@ -96,6 +96,8 @@ class OnboardingTemplate extends StatelessWidget {
 
                     SizedBox(height: size.height * 0.04),
 
+                    const Spacer(),
+
                     if (showDots)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -141,7 +143,9 @@ class OnboardingTemplate extends StatelessWidget {
                             color: Colors.white70,
                           ),
                         ),
-                      ),
+                      )
+                    else
+                      const SizedBox(height: 36),
                   ],
                 ),
               ),

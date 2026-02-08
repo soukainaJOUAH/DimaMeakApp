@@ -289,18 +289,18 @@ class _RegisterUtilisateurState extends State<RegisterUtilisateur> {
                         ),
 
                         SizedBox(height: size.height * 0.05),
+
+                        // bottom image stays fixed at the bottom of the page
+                        Image.asset(
+                          'assets/images/register_bottom.png',
+                          height: size.height * 0.25,
+                          fit: BoxFit.contain,
+                        ),
                       ],
                     ),
                   ),
                 ),
               ),
-            ),
-
-            // bottom image stays fixed at the bottom of the page
-            Image.asset(
-              'assets/images/register_bottom.png',
-              height: size.height * 0.25,
-              fit: BoxFit.contain,
             ),
           ],
         ),

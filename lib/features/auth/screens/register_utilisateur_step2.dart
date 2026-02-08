@@ -221,14 +221,18 @@ class _RegisterUtilisateurStep2State extends State<RegisterUtilisateurStep2> {
                       ),
 
                       SizedBox(height: size.height * 0.05),
+
+                      // bottom image
+                      Image.asset(
+                        'assets/images/register_bottom.png',
+                        height: size.height * 0.25,
+                        fit: BoxFit.contain,
+                      ),
                     ]),
                   ),
                 ),
               ),
             ),
-
-            // bottom image
-            Image.asset('assets/images/register_bottom.png', height: size.height * 0.25, fit: BoxFit.contain),
           ],
         ),
       ),

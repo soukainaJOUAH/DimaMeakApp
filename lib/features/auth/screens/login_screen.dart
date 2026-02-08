@@ -508,40 +508,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: ClipPath(
-                      clipper: TopCurveClipper(),
-                      child: Container(
-                        height: size.height * 0.20,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color(0xFF0A3D91),
-                              Color(0xFF0E7C7B),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Image.asset(
-                      'assets/images/login_bottom.png',
-                      height: size.height * 0.24,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
