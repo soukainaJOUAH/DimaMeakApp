@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../auth/screens/authorization_screen.dart';
 import '../widgets/onboarding_template.dart';
 import 'package:dima_m3ak/features/auth/screens/login_screen.dart';
 

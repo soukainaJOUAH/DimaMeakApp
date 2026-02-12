@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dima_m3ak/features/home/aidant/home_aidant.dart';
 import 'register_aidant_step2.dart';
 
 class RegisterAidant extends StatefulWidget {

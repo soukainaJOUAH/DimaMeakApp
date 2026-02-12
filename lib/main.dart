@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'features/splash/screens/splash_screen.dart';
 import 'firebase_options.dart';
+import 'core/services/sos_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +38,14 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Poppins', // ⬅️ الخط اللي درناه ف pubspec.yaml
       ),
 
+      builder: (context, child) {
+        return Stack(
+          children: [
+            child ?? const SizedBox.shrink(),
+            const SosOverlay(),
+          ],
+        );
+      },
       home: const SplashScreen(),
     );
   }

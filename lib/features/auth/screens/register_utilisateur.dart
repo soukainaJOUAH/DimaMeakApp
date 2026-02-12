@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dima_m3ak/features/auth/screens/authorization_screen.dart';
 import 'register_utilisateur_step2.dart';
 
 class RegisterUtilisateur extends StatefulWidget {

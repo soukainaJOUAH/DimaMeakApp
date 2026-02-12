@@ -5,8 +5,9 @@ import 'map_screen.dart';
 import 'favorites_screen.dart';
 import 'settings_screen.dart';
 import '../../notifications/screens/notifications_screen.dart';
-import '../../profile/screens/profile_screen.dart';
+import '../../notifications/services/notifications_service.dart';
 import 'nouvelle_demande_screen.dart';
+import 'widgets/utilisateur_profile_drawer.dart';
 
 // Replace Stateless HomeUtilisateur with Stateful implementation
 class HomeUtilisateur extends StatefulWidget {
@@ -34,50 +35,7 @@ class _HomeUtilisateurState extends State<HomeUtilisateur> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: _buildBody(size),
       ),
-      endDrawer: Drawer(
-        child: SafeArea(
-          child: Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFDFE4EE),
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Column(
-              children: [
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Container(
-                      height: 88,
-                      width: 88,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFF0A3D91), width: 2),
-                        color: Colors.white,
-                      ),
-                      child: const Icon(Icons.person, size: 48, color: Colors.grey),
-                    ),
-                    Container(
-                      height: 26,
-                      width: 26,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xFF0E7C7B),
-                      ),
-                      child: const Icon(Icons.edit, size: 14, color: Colors.white),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                const Text('Nom', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                const SizedBox(height: 4),
-                const Text('bhrjegrlvdw@gmail.com', style: TextStyle(fontSize: 12, color: Colors.black54)),
-              ],
-            ),
-          ),
-        ),
-      ),
+      endDrawer: const UtilisateurProfileDrawer(),
       bottomNavigationBar: _buildFooter(context, _selectedIndex),
     );
   }
@@ -164,16 +122,35 @@ class _HomeUtilisateurState extends State<HomeUtilisateur> {
                   child: GestureDetector(
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsScreen())),
                     behavior: HitTestBehavior.opaque,
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: _hoveringNotification ? primary : Colors.white,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: _hoveringNotification ? primary : Colors.grey.shade300),
-                        boxShadow: _hoveringNotification ? [BoxShadow(color: primary.withOpacity(0.12), blurRadius: 6, offset: const Offset(0, 3))] : null,
-                      ),
-                      child: Icon(Icons.notifications_none, color: _hoveringNotification ? Colors.white : primary, size: 22),
+                    child: AnimatedBuilder(
+                      animation: NotificationsService.instance,
+                      builder: (context, _) {
+                        final unread = NotificationsService.instance.unreadCount;
+                        return Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: _hoveringNotification ? primary : Colors.white,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: _hoveringNotification ? primary : Colors.grey.shade300),
+                                boxShadow: _hoveringNotification
+                                    ? [BoxShadow(color: primary.withOpacity(0.12), blurRadius: 6, offset: const Offset(0, 3))]
+                                    : null,
+                              ),
+                              child: Icon(Icons.notifications_none, color: _hoveringNotification ? Colors.white : primary, size: 22),
+                            ),
+                            if (unread > 0)
+                              Positioned(
+                                right: -2,
+                                top: -2,
+                                child: _NotifBadge(count: unread),
+                              ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -256,6 +233,29 @@ class _HomeUtilisateurState extends State<HomeUtilisateur> {
             item(icon: Icons.settings, label: 'Paramètres', active: currentIndex == 3, idx: 3),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _NotifBadge extends StatelessWidget {
+  final int count;
+
+  const _NotifBadge({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    final text = count > 99 ? '99+' : count.toString();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE53935),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white, width: 1.5),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700),
       ),
     );
   }
